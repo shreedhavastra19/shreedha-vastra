@@ -1,0 +1,73 @@
+/* ================================================================
+   Shreedha Vastra — Global Styles
+   ================================================================ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ivory text-charcoal font-sans antialiased;
+  }
+
+  .dark body {
+    @apply bg-charcoal text-ivory;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+
+  /* Custom scrollbar — subtle gold, on-brand */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-beige;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gold/50 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gold;
+  }
+}
+
+@layer components {
+  /* Reusable brand button styles */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-gold text-ivory font-medium
+           px-6 py-3 rounded-full transition-all duration-300 hover:bg-gold-dark
+           hover:shadow-gold active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 border-2 border-gold text-gold
+           font-medium px-6 py-3 rounded-full transition-all duration-300
+           hover:bg-gold hover:text-ivory active:scale-95;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 rounded-lg border border-beige bg-white/70 dark:bg-charcoal/40
+           focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold
+           transition-all duration-200 placeholder:text-charcoal/40;
+  }
+
+  .section-heading {
+    @apply font-serif text-3xl md:text-4xl font-semibold text-charcoal dark:text-ivory text-center;
+  }
+
+  .card {
+    @apply bg-white dark:bg-charcoal/60 rounded-2xl shadow-soft overflow-hidden
+           transition-transform duration-300;
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}

@@ -1,0 +1,64 @@
+# ============================================
+# Shreedha Vastra - Root .gitignore
+# Covers both /backend and /frontend
+# ============================================
+
+# ---------- Dependencies ----------
+node_modules/
+**/node_modules/
+
+# ---------- Environment variables (NEVER commit secrets) ----------
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+**/.env
+**/.env.local
+**/.env.development
+**/.env.production
+
+# ---------- Build outputs ----------
+/frontend/dist/
+/frontend/build/
+/backend/dist/
+
+# ---------- Logs ----------
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---------- Uploaded product images (dev only — use cloud storage in prod) ----------
+/backend/uploads/*
+!/backend/uploads/.gitkeep
+
+# ---------- Editor / IDE ----------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ---------- OS files ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- Testing / coverage ----------
+coverage/
+.nyc_output/
+
+# ---------- Misc ----------
+*.tmp
+*.temp
+.cache/
+.eslintcache
+
+# ---------- Vite ----------
+/frontend/.vite/
+
+# ---------- Deployment ----------
+.vercel
+.netlify
