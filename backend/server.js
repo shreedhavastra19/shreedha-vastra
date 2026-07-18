@@ -23,6 +23,7 @@ import productRoutes from './routes/productRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
+import { handleWebhook } from './controllers/paymentController.js'
 import couponRoutes from './routes/couponRoutes.js';
 import bannerRoutes from './routes/bannerRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
@@ -64,7 +65,15 @@ app.use(globalLimiter);
 // ----------------------------------------------------------------
 // Core Middleware
 // ----------------------------------------------------------------
-
+// Razorpay webhook — must be registered BEFORE express.json() below.
+// Razorpay signs the raw, unparsed bytes of the request body, so this
+// route needs express.raw() instead of the normal JSON parser, or
+// signature verification will always fail.
+app.post(
+  '/api/payments/webhook',
+  express.raw({ type: 'application/json' }),
+  handleWebhook
+);
 // Parses incoming JSON request bodies (e.g. POST /api/products)
 app.use(express.json({ limit: '10kb' }));
 
