@@ -16,7 +16,7 @@ import rateLimit from 'express-rate-limit';
 import contactRoutes from './routes/contactRoutes.js';
 // ...
 app.use('/api/contact', contactRoutes);
-
+//import { handleWebhook } from './controllers/paymentController.js';
 import connectDB from './config/db.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
@@ -78,7 +78,7 @@ app.post(
   handleWebhook
 );
 // Parses incoming JSON request bodies (e.g. POST /api/products)
-app.use(express.json({ limit: '10kb' }));
+app.use(express.json({ limit: '10kb', verify:(req, res,buf)=>{ req.rawBody = buf;}, }));
 
 // Parses URL-encoded form data
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
