@@ -78,7 +78,7 @@ const Footer = () => {
           <ul className="space-y-3 text-sm text-ivory/60">
             <li className="flex items-center gap-2"><FiMapPin size={16} /> Ghaziabad, India</li>
             {/* <li className="flex items-center gap-2"><FiPhone size={16} /> +91 98765 43210</li> */}
-            <li className="flex items-center gap-2"><FiMail size={16} /> shreedhavastra19@.in</li>
+            <li className="flex items-center gap-2"><FiMail size={16} /> shreedhavastra19@gmail.com</li>
           </ul>
         </div>
       </div>
