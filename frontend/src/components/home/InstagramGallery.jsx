@@ -8,7 +8,7 @@
 const InstagramGallery = () => (
   <section className="container-custom py-16 text-center">
     <h2 className="section-heading mb-2">Follow Our Journey</h2>
-    <p className="text-gold mb-8 font-medium">@shreedha_vastra</p>
+    <p className="text-gold mb-8 font-medium">@shreedha_vastra_</p>
   </section>
 );
 
