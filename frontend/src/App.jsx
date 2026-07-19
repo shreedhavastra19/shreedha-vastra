@@ -62,9 +62,11 @@ function App() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/orders" element={<OrderHistory />} />
         <Route path="/orders/:id" element={<OrderDetails />} />
-        <Route path ="/profile" element={<Profile />} />
+        <Route path="/profile" element={<Profile />} />
 
-        
+        <Route path="/order-confirmation/:id" element={<OrderDetails />} />
+
+
         <Route path="*" element={<NotFound />} />
       </Route>
 
