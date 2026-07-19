@@ -29,7 +29,7 @@ const Contact = () => {
           </div>
           { <div className="flex gap-4 items-start">
             <FiPhone className="text-gold mt-1" size={20} />
-            <p>+91 9799446268</p>
+            <p></p>
           </div> }
           <div className="flex gap-4 items-start">
             <FiMail className="text-gold mt-1" size={20} />
