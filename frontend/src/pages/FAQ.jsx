@@ -6,7 +6,7 @@ const faqs = [
   { q: 'What sizes do you offer?', a: 'We offer sizes from XS to XXL across most of our collections. Each product page includes a size chart to help you find your perfect fit.' },
   { q: 'How long does delivery take?', a: 'Standard delivery takes 5-9 business days across India. Express delivery options are available at checkout in select pin codes.' },
   { q: 'What is your return policy?', a: 'We offer a 7-day easy return from the date of delivery, provided the item is unused, unwashed, and has original tags attached.' },
-  { q: 'Do you offer Cash on Delivery?', a: 'Yes, COD is available for most pin codes across India in addition to UPI, cards, and net banking via Razorpay.' },
+  // { q: 'Do you offer Cash on Delivery?', a: 'Yes, COD is available for most pin codes across India in addition to UPI, cards, and net banking via Razorpay.' },
   { q: 'How do I track my order?', a: 'Once your order ships, you can track it from the "My Orders" section in your account using the tracking number provided.' },
   { q: 'Can I cancel or modify my order?', a: 'Orders can be cancelled before they are shipped. Please contact our support team as soon as possible for assistance.' },
 ];
