@@ -8,16 +8,13 @@ import Product from '../models/Product.js';
 import Coupon from '../models/Coupon.js';
 import User from '../models/User.js';
 
-// ---------------- Shipping calculation helper ----------------
-// Simple weight + order-value based rule. Free shipping above a
-// threshold, flat rate otherwise. Adjust freely as the business grows.
 const calculateShipping = (itemsPrice, totalWeightGrams) => {
-  if (itemsPrice >= 1999) return 0; // free shipping over ₹1999
-  if (totalWeightGrams > 2000) return 149; // heavier orders (e.g. multiple lehengas)
+  if (itemsPrice >= 1999) return 0;
+  if (totalWeightGrams > 2000) return 149;
   return 99;
 };
 
-const calculateTax = (itemsPrice) => Math.round(itemsPrice * 0.05); // 5% GST placeholder rate
+const calculateTax = (itemsPrice) => Math.round(itemsPrice * 0.05);
 
 const generateOrderNumber = () => {
   const rand = crypto.randomBytes(4).toString('hex').toUpperCase();
@@ -26,9 +23,15 @@ const generateOrderNumber = () => {
 
 // @desc    Create a new order (validates stock, deducts inventory, applies coupon)
 // @route   POST /api/orders
-// @access  Private
+// @access  Public (guest) or Private (logged-in)
 const createOrder = asyncHandler(async (req, res) => {
-  const { orderItems, shippingAddress, paymentMethod, couponCode } = req.body;
+  const { orderItems, shippingAddress, paymentMethod, couponCode, guestInfo } = req.body;
+
+  // Guests must provide contact details since there's no account to fall back on
+  if (!req.user && (!guestInfo || !guestInfo.email || !guestInfo.name || !guestInfo.phone)) {
+    res.status(400);
+    throw new Error('Name, email and phone are required to place an order without an account');
+  }
 
   if (!orderItems || orderItems.length === 0) {
     res.status(400);
@@ -39,7 +42,6 @@ const createOrder = asyncHandler(async (req, res) => {
   let totalWeight = 0;
   const validatedItems = [];
 
-  // Validate stock and lock in current prices for each item
   for (const item of orderItems) {
     const product = await Product.findById(item.product);
     if (!product) {
@@ -62,17 +64,15 @@ const createOrder = asyncHandler(async (req, res) => {
       name: product.name,
       image: product.images[0]?.url || '',
       size: item.size,
-      color: item.color || 'Default',
+      color: item.color,
       quantity: item.quantity,
       price,
     });
 
-    // Deduct stock
     sizeStock.stock -= item.quantity;
     await product.save();
   }
 
-  // Apply coupon if provided
   let discountAmount = 0;
   let couponApplied = null;
   if (couponCode) {
@@ -94,7 +94,8 @@ const createOrder = asyncHandler(async (req, res) => {
 
   const order = await Order.create({
     orderNumber: generateOrderNumber(),
-    user: req.user._id,
+    user: req.user ? req.user._id : undefined,
+    guestInfo: req.user ? undefined : guestInfo,
     orderItems: validatedItems,
     shippingAddress,
     paymentMethod,
@@ -104,22 +105,25 @@ const createOrder = asyncHandler(async (req, res) => {
     taxPrice,
     discountAmount,
     totalPrice,
-    isPaid: paymentMethod === 'COD' ? false : false, // set true only after payment verification
-    estimatedDelivery: new Date(Date.now() + 9 * 24 * 60 * 60 * 1000), // ~9 days out
+    isPaid: paymentMethod === 'COD' ? false : false,
+    estimatedDelivery: new Date(Date.now() + 9 * 24 * 60 * 60 * 1000),
     statusHistory: [{ status: 'Processing', note: 'Order placed' }],
   });
 
-  // Clear the user's cart after successful order placement
-  const user = await User.findById(req.user._id);
-  user.cart = [];
-  await user.save();
+  // Clear the user's saved cart after successful order placement (logged-in only —
+  // guests keep their cart in localStorage, cleared on the frontend after this returns)
+  if (req.user) {
+    const user = await User.findById(req.user._id);
+    user.cart = [];
+    await user.save();
+  }
 
   res.status(201).json({ success: true, order });
 });
 
-// @desc    Get a single order by ID (owner or admin only)
+// @desc    Get a single order by ID (owner, admin, or anyone with the link for a guest order)
 // @route   GET /api/orders/:id
-// @access  Private
+// @access  Public (guest orders) or Private (own orders / admin)
 const getOrderById = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id).populate('user', 'name email');
 
@@ -128,8 +132,11 @@ const getOrderById = asyncHandler(async (req, res) => {
     throw new Error('Order not found');
   }
 
-  const isOwner = order.user._id.toString() === req.user._id.toString();
-  if (!isOwner && req.user.role !== 'admin') {
+  const isAdmin = req.user?.role === 'admin';
+  const isOwner = order.user && req.user && order.user._id.toString() === req.user._id.toString();
+  const isGuestOrder = !order.user;
+
+  if (!isAdmin && !isOwner && !isGuestOrder) {
     res.status(403);
     throw new Error('You do not have permission to view this order');
   }
@@ -147,7 +154,7 @@ const getMyOrders = asyncHandler(async (req, res) => {
 
 // @desc    Mark an order as paid (called internally after payment verification)
 // @route   PUT /api/orders/:id/pay
-// @access  Private
+// @access  Public/Private
 const updateOrderToPaid = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id);
   if (!order) {
@@ -169,9 +176,6 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 // ADMIN
 // ---------------------------------------------------------------
 
-// @desc    Get all orders (admin)
-// @route   GET /api/orders
-// @access  Private/Admin
 const getAllOrders = asyncHandler(async (req, res) => {
   const page = parseInt(req.query.page, 10) || 1;
   const limit = parseInt(req.query.limit, 10) || 20;
@@ -197,9 +201,6 @@ const getAllOrders = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc    Update order status / tracking info (admin)
-// @route   PUT /api/orders/:id/status
-// @access  Private/Admin
 const updateOrderStatus = asyncHandler(async (req, res) => {
   const { orderStatus, trackingNumber, courierName, note } = req.body;
 
