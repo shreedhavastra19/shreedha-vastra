@@ -31,6 +31,14 @@ const createRazorpayOrder = asyncHandler(async (req, res) => {
     currency: 'INR',
     receipt: orderId || `receipt_${Date.now()}`,
   });
+  // Save the mapping immediately — BEFORE the customer even pays.
+  // This way, whichever path completes first (the browser's verify
+  // callback, or this webhook), can always find the matching order.
+  if (orderId) {
+    await Order.findByIdAndUpdate(orderId, {
+      'paymentResult.razorpay_order_id': razorpayOrder.id,
+    });
+  }
 
   // Save the Razorpay order ID onto our own Order right away — this lets
   // the webhook (which can fire independently of the browser) find and
