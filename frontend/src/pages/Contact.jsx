@@ -7,15 +7,23 @@ import Button from '../components/common/Button';
 const Contact = () => {
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm();
 
-  const onSubmit = async () => {
-    // No dedicated backend endpoint for contact form submissions yet —
-    // this simulates a successful send. Wire up a /api/contact route
-    // and nodemailer call in the backend to make this fully functional.
-    await new Promise((r) => setTimeout(r, 600));
+  // const onSubmit = async () => {
+  //   // No dedicated backend endpoint for contact form submissions yet —
+  //   // this simulates a successful send. Wire up a /api/contact route
+  //   // and nodemailer call in the backend to make this fully functional.
+  //   await new Promise((r) => setTimeout(r, 600));
+  //   toast.success('Message sent! We will get back to you within 24 hours.');
+  //   reset();
+  // };
+const onSubmit = async (data) => {
+  try {
+    await api.post('/contact', data);
     toast.success('Message sent! We will get back to you within 24 hours.');
     reset();
-  };
-
+  } catch (err) {
+    toast.error('Something went wrong. Please try again.');
+  }
+};
   return (
     <div className="container-custom py-16">
       <Helmet title="Contact Us | Shreedha Vastra" />
@@ -41,6 +49,10 @@ const Contact = () => {
           <div>
             <input placeholder="Your Name" className="input-field" {...register('name', { required: 'Name is required' })} />
             {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+          </div>
+            <div>
+            <input type='tel' placeholder=" Your Phone number" className="input-field" {...register('phonenumber', { required: 'Phone number is required is required' })} />
+            {errors.phonenumber && <p className="text-red-500 text-xs mt-1">{errors.phonenumber.message}</p>}
           </div>
           <div>
             <input type="email" placeholder="Your Email" className="input-field" {...register('email', { required: 'Email is required' })} />
