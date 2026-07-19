@@ -16,10 +16,9 @@ import { formatCurrency } from '../utils/helpers';
 
 const PAYMENT_METHODS = [
   { value: 'Razorpay', label: 'UPI / Card / Net Banking (Razorpay)' },
-
+  
 ];
 
-// Dynamically loads the Razorpay checkout script (only once)
 const loadRazorpayScript = () =>
   new Promise((resolve) => {
     if (window.Razorpay) return resolve(true);
@@ -33,14 +32,15 @@ const loadRazorpayScript = () =>
 const Checkout = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { cart: items, cartTotal: itemsTotal, refreshCart } = useCart();
+  const { cart: items, cartTotal: itemsTotal, clearCart } = useCart();
 
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState('');
-  const [newAddress, setNewAddress] = useState(null); // toggled form
+  const [newAddress, setNewAddress] = useState(null);
   const [addressForm, setAddressForm] = useState({
     fullName: user?.name || '', phone: '', line1: '', line2: '', city: '', state: '', pincode: '', country: 'India',
   });
+  const [guestEmail, setGuestEmail] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('Razorpay');
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
@@ -48,13 +48,18 @@ const Checkout = () => {
 
   useEffect(() => {
     if (items.length === 0) navigate('/cart');
-    userService.getAddresses().then(({ addresses }) => {
-      setAddresses(addresses);
-      const def = addresses.find((a) => a.isDefault) || addresses[0];
-      if (def) setSelectedAddressId(def._id);
-    });
+
+    if (user) {
+      userService.getAddresses().then(({ addresses }) => {
+        setAddresses(addresses);
+        const def = addresses.find((a) => a.isDefault) || addresses[0];
+        if (def) setSelectedAddressId(def._id);
+      });
+    } else {
+      setNewAddress(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   const shippingEstimate = itemsTotal >= 1999 ? 0 : 99;
   const taxEstimate = Math.round((itemsTotal - discount) * 0.05);
@@ -79,6 +84,11 @@ const Checkout = () => {
   };
 
   const getShippingAddress = () => {
+    if (!user) {
+      const { fullName, phone, line1, line2, city, state, pincode, country } = addressForm;
+      if (!fullName || !phone || !line1 || !city || !state || !pincode) return null;
+      return { fullName, phone, line1, line2, city, state, pincode, country };
+    }
     const addr = addresses.find((a) => a._id === selectedAddressId);
     if (!addr) return null;
     const { fullName, phone, line1, line2, city, state, pincode, country } = addr;
@@ -88,7 +98,11 @@ const Checkout = () => {
   const handlePlaceOrder = async () => {
     const shippingAddress = getShippingAddress();
     if (!shippingAddress) {
-      toast.error('Please select or add a shipping address');
+      toast.error('Please fill in a complete shipping address');
+      return;
+    }
+    if (!user && !guestEmail) {
+      toast.error('Please enter your email so we can send your order confirmation');
       return;
     }
 
@@ -106,11 +120,13 @@ const Checkout = () => {
         shippingAddress,
         paymentMethod,
         couponCode: couponCode || undefined,
+        guestInfo: user
+          ? undefined
+          : { name: shippingAddress.fullName, email: guestEmail, phone: shippingAddress.phone },
       });
 
-      
+      const confirmationPath = user ? `/orders/${order._id}` : `/order-confirmation/${order._id}`;
 
-      // Razorpay flow
       const scriptLoaded = await loadRazorpayScript();
       if (!scriptLoaded) {
         toast.error('Could not load payment gateway. Please try again.');
@@ -138,9 +154,9 @@ const Checkout = () => {
               razorpay_signature: response.razorpay_signature,
               orderId: order._id,
             });
-            await refreshCart();
+            await clearCart();
             toast.success('Payment successful! Order confirmed.');
-            navigate(`/orders/${order._id}`);
+            navigate(confirmationPath);
           } catch {
             toast.error('Payment verification failed. Please contact support.');
           }
@@ -165,34 +181,12 @@ const Checkout = () => {
 
       <div className="grid lg:grid-cols-[1fr_380px] gap-10">
         <div className="space-y-8">
-          {/* Address selection */}
           <section className="card p-6">
             <h3 className="font-serif text-xl mb-4">Shipping Address</h3>
-            <div className="space-y-3">
-              {addresses.map((addr) => (
-                <label
-                  key={addr._id}
-                  className={`block p-4 rounded-lg border cursor-pointer ${
-                    selectedAddressId === addr._id ? 'border-gold bg-gold/5' : 'border-beige'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    className="mr-2"
-                    checked={selectedAddressId === addr._id}
-                    onChange={() => setSelectedAddressId(addr._id)}
-                  />
-                  <span className="font-medium">{addr.fullName}</span> — {addr.line1}, {addr.city}, {addr.state} {addr.pincode}
-                </label>
-              ))}
-            </div>
 
-            {!newAddress ? (
-              <button onClick={() => setNewAddress(true)} className="text-gold text-sm mt-4 hover:underline">
-                + Add a new address
-              </button>
-            ) : (
-              <div className="grid sm:grid-cols-2 gap-3 mt-4">
+            {!user ? (
+              <div className="grid sm:grid-cols-2 gap-3">
+                <input placeholder="Email (for order updates)" type="email" className="input-field sm:col-span-2" value={guestEmail} onChange={(e) => setGuestEmail(e.target.value)} />
                 <input placeholder="Full Name" className="input-field" value={addressForm.fullName} onChange={(e) => setAddressForm({ ...addressForm, fullName: e.target.value })} />
                 <input placeholder="Phone" className="input-field" value={addressForm.phone} onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })} />
                 <input placeholder="Address Line 1" className="input-field sm:col-span-2" value={addressForm.line1} onChange={(e) => setAddressForm({ ...addressForm, line1: e.target.value })} />
@@ -200,15 +194,54 @@ const Checkout = () => {
                 <input placeholder="City" className="input-field" value={addressForm.city} onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })} />
                 <input placeholder="State" className="input-field" value={addressForm.state} onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })} />
                 <input placeholder="Pincode" className="input-field" value={addressForm.pincode} onChange={(e) => setAddressForm({ ...addressForm, pincode: e.target.value })} />
-                <div className="flex gap-2 sm:col-span-2">
-                  <Button onClick={handleSaveNewAddress}>Save Address</Button>
-                  <Button variant="outline" onClick={() => setNewAddress(false)}>Cancel</Button>
-                </div>
+                <p className="text-xs text-charcoal/50 sm:col-span-2">
+                  Have an account? <a href="/login" className="text-gold hover:underline">Log in</a> to use a saved address and track this order later.
+                </p>
               </div>
+            ) : (
+              <>
+                <div className="space-y-3">
+                  {addresses.map((addr) => (
+                    <label
+                      key={addr._id}
+                      className={`block p-4 rounded-lg border cursor-pointer ${
+                        selectedAddressId === addr._id ? 'border-gold bg-gold/5' : 'border-beige'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        className="mr-2"
+                        checked={selectedAddressId === addr._id}
+                        onChange={() => setSelectedAddressId(addr._id)}
+                      />
+                      <span className="font-medium">{addr.fullName}</span> — {addr.line1}, {addr.city}, {addr.state} {addr.pincode}
+                    </label>
+                  ))}
+                </div>
+
+                {!newAddress ? (
+                  <button onClick={() => setNewAddress(true)} className="text-gold text-sm mt-4 hover:underline">
+                    + Add a new address
+                  </button>
+                ) : (
+                  <div className="grid sm:grid-cols-2 gap-3 mt-4">
+                    <input placeholder="Full Name" className="input-field" value={addressForm.fullName} onChange={(e) => setAddressForm({ ...addressForm, fullName: e.target.value })} />
+                    <input placeholder="Phone" className="input-field" value={addressForm.phone} onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })} />
+                    <input placeholder="Address Line 1" className="input-field sm:col-span-2" value={addressForm.line1} onChange={(e) => setAddressForm({ ...addressForm, line1: e.target.value })} />
+                    <input placeholder="Address Line 2 (optional)" className="input-field sm:col-span-2" value={addressForm.line2} onChange={(e) => setAddressForm({ ...addressForm, line2: e.target.value })} />
+                    <input placeholder="City" className="input-field" value={addressForm.city} onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })} />
+                    <input placeholder="State" className="input-field" value={addressForm.state} onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })} />
+                    <input placeholder="Pincode" className="input-field" value={addressForm.pincode} onChange={(e) => setAddressForm({ ...addressForm, pincode: e.target.value })} />
+                    <div className="flex gap-2 sm:col-span-2">
+                      <Button onClick={handleSaveNewAddress}>Save Address</Button>
+                      <Button variant="outline" onClick={() => setNewAddress(false)}>Cancel</Button>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </section>
 
-          {/* Payment method */}
           <section className="card p-6">
             <h3 className="font-serif text-xl mb-4">Payment Method</h3>
             <div className="space-y-3">
@@ -226,7 +259,6 @@ const Checkout = () => {
           </section>
         </div>
 
-        {/* Order summary */}
         <div className="card p-6 h-fit">
           <h3 className="font-serif text-xl mb-4">Order Summary</h3>
           <div className="space-y-2 text-sm mb-4 max-h-48 overflow-y-auto">
