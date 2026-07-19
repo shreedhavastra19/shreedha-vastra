@@ -25,15 +25,15 @@ const Contact = () => {
         <div className="space-y-6">
           <div className="flex gap-4 items-start">
             <FiMapPin className="text-gold mt-1" size={20} />
-            <p>Shreedha Vastra Studio<br />Jaipur, Rajasthan, India</p>
+            <p>Shreedha Vastra<br />Ghaziabad,Uttar Pradesh,India</p>
           </div>
-          <div className="flex gap-4 items-start">
+          {/* <div className="flex gap-4 items-start">
             <FiPhone className="text-gold mt-1" size={20} />
-            <p>+91 98765 43210</p>
-          </div>
+            <p></p>
+          </div> */}
           <div className="flex gap-4 items-start">
             <FiMail className="text-gold mt-1" size={20} />
-            <p>support@shreedhavastra.in</p>
+            <p>shreedhavastra19@gmail.com</p>
           </div>
         </div>
 
