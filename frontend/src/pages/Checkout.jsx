@@ -16,7 +16,7 @@ import { formatCurrency } from '../utils/helpers';
 
 const PAYMENT_METHODS = [
   { value: 'Razorpay', label: 'UPI / Card / Net Banking (Razorpay)' },
-  { value: 'COD', label: 'Cash on Delivery' },
+
 ];
 
 // Dynamically loads the Razorpay checkout script (only once)
@@ -108,12 +108,7 @@ const Checkout = () => {
         couponCode: couponCode || undefined,
       });
 
-      if (paymentMethod === 'COD') {
-        await refreshCart(); // backend already cleared the cart when the order was created
-        toast.success('Order placed successfully!');
-        navigate(`/orders/${order._id}`);
-        return;
-      }
+      
 
       // Razorpay flow
       const scriptLoaded = await loadRazorpayScript();
