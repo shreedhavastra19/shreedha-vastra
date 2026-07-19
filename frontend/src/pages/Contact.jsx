@@ -27,7 +27,7 @@ const onSubmit = async (data) => {
   return (
     <div className="container-custom py-16">
       <Helmet title="Contact Us | Shreedha Vastra" />
-      <h1 className="font-serif text-4xl mb-10 text-center">Get in Touch</h1>
+      <h1 className="font-serif text-4xl mb-10 text-center">Contact Us</h1>
 
       <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
         <div className="space-y-6">
