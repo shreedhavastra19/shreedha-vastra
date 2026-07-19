@@ -3,7 +3,7 @@
 // ================================================================
 import express from 'express';
 import { body } from 'express-validator';
-import { protect, authorize } from '../middleware/authMiddleware.js';
+import { protect, protectOptional, authorize } from '../middleware/authMiddleware.js';
 import validate from '../middleware/validateMiddleware.js';
 import {
   createOrder,
@@ -16,28 +16,33 @@ import {
 
 const router = express.Router();
 
-router.use(protect); // every order route requires login
+// Logged-in users only — a guest has no order history to list
+router.get('/my-orders', protect, getMyOrders);
 
-router.get('/my-orders', getMyOrders);
-
+// Guests and logged-in users can both place and view an order
 router.post(
   '/',
+  protectOptional,
   [
     body('orderItems').isArray({ min: 1 }).withMessage('Order must contain at least one item'),
     body('shippingAddress').notEmpty().withMessage('Shipping address is required'),
     body('paymentMethod')
-      .isIn(['UPI', 'Card', 'NetBanking', 'COD', 'Razorpay'])
+      .isIn(['UPI', 'Card', 'NetBanking', 'Razorpay'])
       .withMessage('Invalid payment method'),
+    body('guestInfo.email')
+      .if((value, { req }) => !req.user)
+      .isEmail()
+      .withMessage('A valid email is required to place an order without an account'),
   ],
   validate,
   createOrder
 );
 
-router.get('/:id', getOrderById);
-router.put('/:id/pay', updateOrderToPaid);
+router.get('/:id', protectOptional, getOrderById);
+router.put('/:id/pay', protectOptional, updateOrderToPaid);
 
 // Admin
-router.get('/', authorize('admin'), getAllOrders);
-router.put('/:id/status', authorize('admin'), updateOrderStatus);
+router.get('/', protect, authorize('admin'), getAllOrders);
+router.put('/:id/status', protect, authorize('admin'), updateOrderStatus);
 
 export default router;
