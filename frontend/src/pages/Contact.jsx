@@ -27,10 +27,10 @@ const Contact = () => {
             <FiMapPin className="text-gold mt-1" size={20} />
             <p>Shreedha Vastra<br />Ghaziabad,Uttar Pradesh,India</p>
           </div>
-          {/* <div className="flex gap-4 items-start">
+          { <div className="flex gap-4 items-start">
             <FiPhone className="text-gold mt-1" size={20} />
-            <p></p>
-          </div> */}
+            <p>+91 9799446268</p>
+          </div> }
           <div className="flex gap-4 items-start">
             <FiMail className="text-gold mt-1" size={20} />
             <p>shreedhavastra19@gmail.com</p>
