@@ -65,7 +65,7 @@ const Footer = () => {
           <h5 className="font-semibold mb-4">Company</h5>
           <ul className="space-y-2 text-sm text-ivory/60">
             <li><Link to="/about" className="hover:text-gold">About Us</Link></li>
-            <li><Link to="/contact" className="hover:text-gold">Contact</Link></li>
+            <li><Link to="/contact" className="hover:text-gold">Contact Us</Link></li>
             <li><Link to="/faq" className="hover:text-gold">FAQ</Link></li>
             <li><Link to="/privacy-policy" className="hover:text-gold">Privacy Policy</Link></li>
             <li><Link to="/terms-and-conditions" className="hover:text-gold">Terms & Conditions</Link></li>
