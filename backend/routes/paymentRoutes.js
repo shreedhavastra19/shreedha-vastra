@@ -7,8 +7,6 @@ import { createRazorpayOrder, verifyRazorpayPayment } from '../controllers/payme
 
 const router = express.Router();
 
-router.use(protect);
-
 router.post('/create-order',proctectOptional, createRazorpayOrder);
 router.post('/verify', protectOptional , verifyRazorpayPayment);
 
