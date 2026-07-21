@@ -64,7 +64,7 @@ const createOrder = asyncHandler(async (req, res) => {
       name: product.name,
       image: product.images[0]?.url || '',
       size: item.size,
-      color: item.color,
+      color: item.color || "N/A",
       quantity: item.quantity,
       price,
     });
