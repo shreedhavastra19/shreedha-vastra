@@ -9,7 +9,7 @@ const orderItemSchema = new mongoose.Schema(
     name: { type: String, required: true },
     image: { type: String, required: true },
     size: { type: String, required: true },
-    color: { type: String, required: true },
+    color: { type: String, default: 'N/A'},
     quantity: { type: Number, required: true, min: 1 },
     price: { type: Number, required: true }, // price per unit at time of purchase
   },
