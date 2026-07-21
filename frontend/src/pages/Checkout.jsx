@@ -156,6 +156,11 @@ const Checkout = () => {
             });
             await clearCart();
             toast.success('Payment successful! Order confirmed.');
+            if (!user) {
+  const guestOrders = JSON.parse(localStorage.getItem('guestOrders') || '[]');
+  guestOrders.push(order._id);
+  localStorage.setItem('guestOrders', JSON.stringify(guestOrders));
+}
             navigate(confirmationPath);
           } catch {
             toast.error('Payment verification failed. Please contact support.');
