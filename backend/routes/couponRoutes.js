@@ -13,6 +13,7 @@ import {
 
 const router = express.Router();
 
+
 router.post('/apply', protectOptional, applyCoupon);
 
 // Admin
