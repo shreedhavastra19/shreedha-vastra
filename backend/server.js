@@ -15,7 +15,7 @@ import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import contactRoutes from './routes/contactRoutes.js';
 // ...
-app.use('/api/contact', contactRoutes);
+
 //import { handleWebhook } from './controllers/paymentController.js';
 import connectDB from './config/db.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
@@ -120,7 +120,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/coupons', couponRoutes);
 app.use('/api/banners', bannerRoutes);
 app.use('/api/admin', adminRoutes);
-
+app.use('/api/contact', contactRoutes);
 // Note: cart and wishlist are handled as sub-routes under /api/users
 // (see userRoutes.js) since they live on the User model itself.
 
