@@ -193,12 +193,12 @@ const Checkout = () => {
               <div className="grid sm:grid-cols-2 gap-3">
                 <input placeholder="Email (for order updates)" type="email" className="input-field sm:col-span-2" value={guestEmail} onChange={(e) => setGuestEmail(e.target.value)} />
                 <input placeholder="Full Name" className="input-field" value={addressForm.fullName} onChange={(e) => setAddressForm({ ...addressForm, fullName: e.target.value })} />
-                <input placeholder="Phone" className="input-field" value={addressForm.phone} onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })} />
+                <input type="tel" inputMode="numeric" pattern="[0-9]*" maxLength={10} placeholder="Phone" className="input-field" value={addressForm.phone} onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })} />
                 <input placeholder="Address Line 1" className="input-field sm:col-span-2" value={addressForm.line1} onChange={(e) => setAddressForm({ ...addressForm, line1: e.target.value })} />
                 <input placeholder="Address Line 2 (optional)" className="input-field sm:col-span-2" value={addressForm.line2} onChange={(e) => setAddressForm({ ...addressForm, line2: e.target.value })} />
                 <input placeholder="City" className="input-field" value={addressForm.city} onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })} />
                 <input placeholder="State" className="input-field" value={addressForm.state} onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })} />
-                <input placeholder="Pincode" className="input-field" value={addressForm.pincode} onChange={(e) => setAddressForm({ ...addressForm, pincode: e.target.value })} />
+                <input type="text" inputmode="numeric" pattern="[0-9]*" maxLength={6} placeholder="Pincode" className="input-field" value={addressForm.pincode} onChange={(e) => setAddressForm({ ...addressForm, pincode: e.target.value })} />
                 <p className="text-xs text-charcoal/50 sm:col-span-2">
                   Have an account? <a href="/login" className="text-gold hover:underline">Log in</a> to use a saved address and track this order later.
                 </p>
