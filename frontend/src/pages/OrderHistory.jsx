@@ -6,7 +6,7 @@ import EmptyState from '../components/common/EmptyState';
 import Loader from '../components/common/Loader';
 import orderService from '../services/orderService';
 import { formatCurrency, formatDate } from '../utils/helpers';
-
+import { useAuth } from '../context/AuthContext';
 const statusColor = {
   Processing: 'bg-yellow-100 text-yellow-700',
   Confirmed: 'bg-blue-100 text-blue-700',
@@ -21,12 +21,26 @@ const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    orderService.getMyOrders().then((res) => {
+ const { isAuthenticated } = useAuth();
+
+useEffect(() => {
+  const loadOrders = async () => {
+    if (isAuthenticated) {
+      const res = await orderService.getMyOrders();
       setOrders(res.orders);
-      setLoading(false);
-    });
-  }, []);
+    } else {
+      const guestOrderIds = JSON.parse(localStorage.getItem('guestOrders') || '[]');
+      const results = await Promise.all(
+        guestOrderIds.map((id) =>
+          orderService.getOrderById(id).then((res) => res.order).catch(() => null)
+        )
+      );
+      setOrders(results.filter(Boolean).reverse());
+    }
+    setLoading(false);
+  };
+  loadOrders();
+}, [isAuthenticated]);
 
   if (loading) return <Loader fullScreen />;
 
