@@ -46,7 +46,7 @@ const AdminOrders = () => {
         renderRow={(o) => (
           <tr key={o._id} className="border-t border-beige/50">
             <td className="px-4 py-3">{o.orderNumber}</td>
-            <td className="px-4 py-3">{o.user?.name}</td>
+            <td className="px-4 py-3">{o.user?.name || order.guestInfo?.name || 'Guest'}</td>
             <td className="px-4 py-3">{formatDate(o.createdAt)}</td>
             <td className="px-4 py-3">{formatCurrency(o.totalPrice)}</td>
             <td className="px-4 py-3">{o.orderStatus}</td>
