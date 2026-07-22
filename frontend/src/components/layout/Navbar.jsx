@@ -3,7 +3,7 @@
 // ================================================================
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiSearch, FiHeart, FiShoppingBag, FiUser, FiMenu, FiX, FiMoon, FiSun } from 'react-icons/fi';
+import { FiSearch, FiHeart, FiShoppingBag, FiUser, FiMenu, FiX, FiMoon, FiSun, FiPackage } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
@@ -90,7 +90,9 @@ const Navbar = () => {
               </span>
             )}
           </Link>
-
+<Link to="/orders" className="hover:text-gold" aria-label="My Orders">
+<FiPackage/>
+</Link>
           <Link
             to={isAuthenticated ? (isAdmin ? '/admin' : '/profile') : '/login'}
             className="hover:text-gold"
