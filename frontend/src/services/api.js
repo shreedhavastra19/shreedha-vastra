@@ -20,9 +20,9 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     const message = error.response?.data?.message || 'Something went wrong. Please try again.';
-
+    const isSilent = error.config?.silent;
     // Don't toast validation errors here — forms handle those inline
-    if (error.response?.status !== 400 || !error.response?.data?.errors) {
+    if (!isSilent && (eorror.response?.status !==400 || !error.response?.data?.errors)){
       toast.error(message);
     }
 
