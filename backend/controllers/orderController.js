@@ -88,9 +88,9 @@ const createOrder = asyncHandler(async (req, res) => {
     }
   }
 
-  const shippingPrice = calculateShipping(itemsPrice, totalWeight);
-  const taxPrice = calculateTax(itemsPrice - discountAmount);
-  const totalPrice = itemsPrice - discountAmount + shippingPrice + taxPrice;
+   const shippingPrice = 0;
+   const taxPrice = 0;
+  const totalPrice = itemsPrice;
 
   const order = await Order.create({
     orderNumber: generateOrderNumber(),
