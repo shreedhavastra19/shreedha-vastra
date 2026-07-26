@@ -4,6 +4,7 @@
 import asyncHandler from 'express-async-handler';
 import Coupon from '../models/Coupon.js';
 
+
 // @desc    Validate & preview a coupon's discount for a given order value
 // @route   POST /api/coupons/apply
 // @access  Private
@@ -30,6 +31,21 @@ const applyCoupon = asyncHandler(async (req, res) => {
     discountAmount,
     message: validity.message,
   });
+  // @desc    Check if any coupon is currently active & usable (no code needed)
+// @route   GET /api/coupons/active
+// @access  Public
+const hasActiveCoupon = asyncHandler(async (req, res) => {
+  const activeCoupon = await Coupon.findOne({
+    isActive: true,
+    expiryDate: { $gte: new Date() },
+    $or: [
+      { usageLimit: null },
+      { $expr: { $lt: ['$usedCount', '$usageLimit'] } },
+    ],
+  });
+
+  res.status(200).json({ success: true, hasActiveCoupon: !!activeCoupon });
+});
 });
 
 // ---------------------------------------------------------------
@@ -80,4 +96,4 @@ const deleteCoupon = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, message: 'Coupon deleted successfully' });
 });
 
-export { applyCoupon, getCoupons, createCoupon, updateCoupon, deleteCoupon };
+export { applyCoupon, hasActiveCoupon , getCoupons, createCoupon, updateCoupon, deleteCoupon };
