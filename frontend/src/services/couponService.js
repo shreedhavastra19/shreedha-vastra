@@ -3,6 +3,7 @@ import api from './api';
 const couponService = {
   applyCoupon: (code, orderValue) =>
     api.post('/coupons/apply', { code, orderValue }).then((res) => res.data),
+  hasActiveCoupon: () => api.get('/coupons/active', { silent: true }).then((res) => res.data),
   // Admin
   getCoupons: () => api.get('/coupons').then((res) => res.data),
   createCoupon: (data) => api.post('/coupons', data).then((res) => res.data),
