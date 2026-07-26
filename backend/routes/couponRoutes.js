@@ -5,6 +5,7 @@ import express from 'express';
 import { protectOptional, authorize, protect } from '../middleware/authMiddleware.js';
 import {
   applyCoupon,
+  hasActiveCoupon,
   getCoupons,
   createCoupon,
   updateCoupon,
@@ -13,7 +14,7 @@ import {
 
 const router = express.Router();
 
-
+router.get('/active', hasActiveCoupon);
 router.post('/apply', protectOptional, applyCoupon);
 
 // Admin

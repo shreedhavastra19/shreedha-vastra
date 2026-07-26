@@ -45,7 +45,10 @@ const Checkout = () => {
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
   const [placing, setPlacing] = useState(false);
-
+const [showCoupon, setShowCoupon] = useState(false);
+useEffect(() => {
+  couponService.hasActiveCoupon().then(({ hasActiveCoupon }) => setShowCoupon(hasActiveCoupon)).catch(() => {});
+}, []);
   useEffect(() => {
     if (items.length === 0) navigate('/cart');
 
@@ -275,7 +278,8 @@ const Checkout = () => {
             ))}
           </div>
 
-          <div className="flex gap-2 mb-4">
+         {showCoupon&&(
+           <div className="flex gap-2 mb-4">
             <input
               placeholder="Coupon code"
               value={couponCode}
@@ -284,6 +288,7 @@ const Checkout = () => {
             />
             <Button onClick={handleApplyCoupon} className="whitespace-nowrap py-2 px-4">Apply</Button>
           </div>
+         )}
 
           <div className="space-y-2 text-sm border-t border-beige pt-4">
             <div className="flex justify-between"><span>Subtotal</span><span>{formatCurrency(itemsTotal)}</span></div>
