@@ -63,7 +63,7 @@ const Checkout = () => {
 
   // const shippingEstimate = itemsTotal >= 1999 ? 0 : 99;
   // const taxEstimate = Math.round((itemsTotal - discount) * 0.05);
-  // const grandTotal = itemsTotal - discount + shippingEstimate + taxEstimate;
+    const grandTotal = itemsTotal //- discount + shippingEstimate + taxEstimate;
 
   const handleApplyCoupon = async () => {
     try {
