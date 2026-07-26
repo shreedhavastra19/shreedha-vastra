@@ -8,13 +8,13 @@ import Product from '../models/Product.js';
 import Coupon from '../models/Coupon.js';
 import User from '../models/User.js';
 
-const calculateShipping = (itemsPrice, totalWeightGrams) => {
-  if (itemsPrice >= 1999) return 0;
-  if (totalWeightGrams > 2000) return 149;
-  return 99;
-};
+// const calculateShipping = (itemsPrice, totalWeightGrams) => {
+//   if (itemsPrice >= 1999) return 0;
+//   if (totalWeightGrams > 2000) return 149;
+//   return 99;
+// };
 
-const calculateTax = (itemsPrice) => Math.round(itemsPrice * 0.05);
+// const calculateTax = (itemsPrice) => Math.round(itemsPrice * 0.05);
 
 const generateOrderNumber = () => {
   const rand = crypto.randomBytes(4).toString('hex').toUpperCase();
