@@ -33,7 +33,7 @@ const Navbar = () => {
     <header className="sticky top-0 z-40 bg-ivory/95 dark:bg-charcoal/95 backdrop-blur-sm border-b border-beige/60 dark:border-white/10">
       {/* Top announcement strip */}
       <div className="bg-gold text-ivory text-center text-xs sm:text-sm py-2 px-4">
-        Free shipping on orders above ₹1999 · Use code WELCOME10 for 10% off your first order
+        Free shipping on orders above ₹999.
       </div>
 
       <div className="container-custom flex items-center justify-between py-4 gap-4">
