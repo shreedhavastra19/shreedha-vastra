@@ -288,8 +288,8 @@ const Checkout = () => {
           <div className="space-y-2 text-sm border-t border-beige pt-4">
             <div className="flex justify-between"><span>Subtotal</span><span>{formatCurrency(itemsTotal)}</span></div>
             {discount > 0 && <div className="flex justify-between text-green-600"><span>Discount</span><span>-{formatCurrency(discount)}</span></div>}
-            <div className="flex justify-between"><span>Shipping</span><span>{shippingEstimate === 0 ? 'Free' : formatCurrency(shippingEstimate)}</span></div>
-            <div className="flex justify-between"><span>Tax (GST)</span><span>{formatCurrency(taxEstimate)}</span></div>
+            {/* <div className="flex justify-between"><span>Shipping</span><span>{shippingEstimate === 0 ? 'Free' : formatCurrency(shippingEstimate)}</span></div>
+            <div className="flex justify-between"><span>Tax (GST)</span><span>{formatCurrency(taxEstimate)}</span></div> */}
             <div className="flex justify-between font-semibold text-base border-t border-beige pt-2 mt-2">
               <span>Total</span><span>{formatCurrency(grandTotal)}</span>
             </div>
