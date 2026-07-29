@@ -9,7 +9,7 @@ import asyncHandler from 'express-async-handler';
 import crypto from 'crypto';
 import Razorpay from 'razorpay';
 import Order from '../models/Order.js';
-
+import sendOrderConfirmationEmail from '../utils/sendOrderConfirmationEmail.js';
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -77,6 +77,15 @@ const markOrderAsPaid = async (order, { razorpay_order_id, razorpay_payment_id, 
   order.statusHistory.push({ status: 'Confirmed', note: 'Payment confirmed' });
 
   await order.save();
+
+  try {
+    const user = await User.findById(order.user);
+    if (user) await sendOrderConfirmationEmail(order, user);
+  } catch (err) {
+    console.error(`Order confirmation email failed for ${order.orderNumber}:`, err.message);
+  }
+
+  res.status(200).json({ success: true, message: 'Payment verified successfully', order });
   return order;
 };
 
@@ -142,7 +151,7 @@ const handleWebhook = asyncHandler(async (req, res) => {
     // If no matching order is found, we still return 200 below — Razorpay
     // will keep retrying otherwise, and a retry won't fix a missing order.
   }
-
+  
   res.status(200).json({ received: true });
 });
 
