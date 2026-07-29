@@ -30,7 +30,8 @@ const applyCoupon = asyncHandler(async (req, res) => {
     code: coupon.code,
     discountAmount,
     message: validity.message,
-  });
+  
+});
   // @desc    Check if any coupon is currently active & usable (no code needed)
 // @route   GET /api/coupons/active
 // @access  Public
