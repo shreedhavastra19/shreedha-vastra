@@ -7,6 +7,7 @@ import Order from '../models/Order.js';
 import Product from '../models/Product.js';
 import Coupon from '../models/Coupon.js';
 import User from '../models/User.js';
+import sendOrderConfirmationEmail from '../utils/sendOrderConfirmationEmail.js';
 
 // const calculateShipping = (itemsPrice, totalWeightGrams) => {
 //   if (itemsPrice >= 1999) return 0;
@@ -169,6 +170,14 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
   order.statusHistory.push({ status: 'Confirmed', note: 'Payment received' });
 
   const updated = await order.save();
+
+  try {
+    const user = await User.findById(updated.user);
+    if (user) await sendOrderConfirmationEmail(updated, user);
+  } catch (err) {
+    console.error(`Order confirmation email failed for ${updated.orderNumber}:`, err.message);
+  }
+
   res.status(200).json({ success: true, order: updated });
 });
 
