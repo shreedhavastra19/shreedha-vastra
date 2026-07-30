@@ -38,7 +38,7 @@ import AdminCoupons from './pages/admin/Coupons';
 import AdminBanners from './pages/admin/Banners';
 import AdminCategories from './pages/admin/Categories';
 import AdminAnalytics from './pages/admin/Analytics';
-import scrollToTop from './components/common/scrollToTop';
+import ScrollToTop from './components/common/ScrollToTop';
 function App() {
   return (
     <>
