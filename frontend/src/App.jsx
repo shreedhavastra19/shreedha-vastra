@@ -38,9 +38,11 @@ import AdminCoupons from './pages/admin/Coupons';
 import AdminBanners from './pages/admin/Banners';
 import AdminCategories from './pages/admin/Categories';
 import AdminAnalytics from './pages/admin/Analytics';
-
+import scrollToTop from './components/common/scrollToTop';
 function App() {
   return (
+    <>
+    <scrollToTop/>
     <Routes>
       {/* ---------------- Public / Customer routes ---------------- */}
       <Route element={<Layout />}>
@@ -84,6 +86,7 @@ function App() {
         </Route>
       </Route>
     </Routes>
+    </>
   );
 }
 
