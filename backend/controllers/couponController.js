@@ -32,6 +32,7 @@ const applyCoupon = asyncHandler(async (req, res) => {
     message: validity.message,
   
 });
+});
   // @desc    Check if any coupon is currently active & usable (no code needed)
 // @route   GET /api/coupons/active
 // @access  Public
@@ -47,7 +48,7 @@ const hasActiveCoupon = asyncHandler(async (req, res) => {
 
   res.status(200).json({ success: true, hasActiveCoupon: !!activeCoupon });
 });
-});
+
 
 // ---------------------------------------------------------------
 // ADMIN
