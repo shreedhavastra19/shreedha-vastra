@@ -56,7 +56,7 @@ const sendOrderConfirmationEmail = async (order, user) => {
 
   await sendEmail({
     to: user.email,
-    subject: `Order Confirmed - ${order.orderNumber} | Shreedha Vastra`,
+    subject: `Order confirmed - ${order.orderNumber} | Shreedha Vastra`,
     html,
   });
 };
