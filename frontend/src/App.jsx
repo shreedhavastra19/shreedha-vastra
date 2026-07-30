@@ -28,6 +28,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsAndConditions from './pages/TermsAndConditions';
 import RefundPolicy from './pages/RefundPolicy';
 import NotFound from './pages/NotFound';
+import ScrollToTop from './components/common/ScrollToTop';
 
 // Admin pages
 import Dashboard from './pages/admin/Dashboard';
@@ -38,11 +39,11 @@ import AdminCoupons from './pages/admin/Coupons';
 import AdminBanners from './pages/admin/Banners';
 import AdminCategories from './pages/admin/Categories';
 import AdminAnalytics from './pages/admin/Analytics';
-import ScrollToTop from './components/common/ScrollToTop';
+
 function App() {
   return (
     <>
-    <scrollToTop/>
+    <ScrollToTop/>
     <Routes>
       {/* ---------------- Public / Customer routes ---------------- */}
       <Route element={<Layout />}>
