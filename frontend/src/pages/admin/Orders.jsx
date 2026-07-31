@@ -13,11 +13,16 @@ const AdminOrders = () => {
 
   const loadOrders = async () => {
     setLoading(true);
-    const res = await orderService.getAllOrders({});
-    setOrders(res.orders);
-    setLoading(false);
+    try {
+      const res = await orderService.getAllOrders({});
+      setOrders(res.orders || []);
+    } catch (err) {
+      console.error('Failed to load orders:', err);
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
   };
-
   useEffect(() => {
     loadOrders();
   }, []);
@@ -39,14 +44,13 @@ const AdminOrders = () => {
   return (
     <div>
       <h1 className="font-serif text-3xl mb-8">Orders</h1>
-
-      <DataTable
+<DataTable
         columns={['Order #', 'Customer', 'Date', 'Total', 'Status', 'Actions']}
         data={orders}
         renderRow={(o) => (
           <tr key={o._id} className="border-t border-beige/50">
             <td className="px-4 py-3">{o.orderNumber}</td>
-            <td className="px-4 py-3">{o.user?.name || order.guestInfo?.name || 'Guest'}</td>
+            <td className="px-4 py-3">{o.user?.name}</td>
             <td className="px-4 py-3">{formatDate(o.createdAt)}</td>
             <td className="px-4 py-3">{formatCurrency(o.totalPrice)}</td>
             <td className="px-4 py-3">{o.orderStatus}</td>
