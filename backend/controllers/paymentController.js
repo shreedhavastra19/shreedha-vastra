@@ -10,6 +10,7 @@ import crypto from 'crypto';
 import Razorpay from 'razorpay';
 import Order from '../models/Order.js';
 import sendOrderConfirmationEmail from '../utils/sendOrderConfirmationEmail.js';
+import User from '../models/User.js';
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -85,7 +86,7 @@ const markOrderAsPaid = async (order, { razorpay_order_id, razorpay_payment_id, 
     console.error(`Order confirmation email failed for ${order.orderNumber}:`, err.message);
   }
 
-  res.status(200).json({ success: true, message: 'Payment verified successfully', order });
+  //res.status(200).json({ success: true, message: 'Payment verified successfully', order });
   return order;
 };
 
