@@ -1,20 +1,17 @@
 const testimonials = [
   {
     name: 'Ananya Sharma',
-    location: 'Mumbai',
-    text: 'The fabric quality and stitching are absolutely stunning. I wore the Raja Rani set to my sister\u2019s wedding and got so many compliments!',
+    text: 'The fabric quality and stitching are absolutely stunning. I wore the Raja Rani set and got so many compliments!',
     rating: 5,
   },
   {
-    name: 'Priya Reddy',
-    location: 'Hyderabad',
+    name: 'Priya ',
     text: 'Shreedha Vastra has become my go-to for festive wear. The colors are exactly as shown online and delivery was fast.',
     rating: 5,
   },
   {
-    name: 'Kavita Nair',
-    location: 'Bengaluru',
-    text: 'Beautiful craftsmanship at a fair price. The customer service team helped me pick the right size and it fit perfectly.',
+    name: 'Kavita ',
+    text: 'Beautiful craftsmanship at a fair price.',
     rating: 4,
   },
 ];
