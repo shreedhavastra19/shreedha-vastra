@@ -158,7 +158,7 @@ useEffect(() => {
               orderId: order._id,
             });
           } catch {
-            toast.error('');
+            toast.error('Payment verification failed. Please contact support');
             return;
       }
 
