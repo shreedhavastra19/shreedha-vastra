@@ -157,17 +157,33 @@ useEffect(() => {
               razorpay_signature: response.razorpay_signature,
               orderId: order._id,
             });
-            await clearCart();
-            toast.success('Payment successful! Order confirmed.');
-            if (!user) {
-  const guestOrders = JSON.parse(localStorage.getItem('guestOrders') || '[]');
-  guestOrders.push(order._id);
-  localStorage.setItem('guestOrders', JSON.stringify(guestOrders));
-}
-            navigate(confirmationPath);
           } catch {
             toast.error('Payment verification failed. Please contact support.');
+            return;
           }
+
+          // Payment is verified and the order is confirmed at this point.
+          // Anything below is just cleanup/navigation — it should never
+          // make a successful payment look like it failed.
+          toast.success('Payment successful! Order confirmed.');
+
+          try {
+            await clearCart();
+          } catch (err) {
+            console.error('Failed to clear cart after payment:', err);
+          }
+
+          if (!user) {
+            try {
+              const guestOrders = JSON.parse(localStorage.getItem('guestOrders') || '[]');
+              guestOrders.push(order._id);
+              localStorage.setItem('guestOrders', JSON.stringify(guestOrders));
+            } catch (err) {
+              console.error('Failed to save guest order locally:', err);
+            }
+          }
+
+          navigate(confirmationPath);
         },
         prefill: { name: user?.name, email: user?.email, contact: shippingAddress.phone },
         theme: { color: '#B08D57' },
