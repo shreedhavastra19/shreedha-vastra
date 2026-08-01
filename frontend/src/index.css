@@ -11,7 +11,7 @@
   }
 
   body {
-    @apply bg-ivory text-charcoal font-sans antialiased overflow-hidden;
+    @apply bg-ivory text-charcoal font-sans antialiased;
   }
 
   .dark body {
