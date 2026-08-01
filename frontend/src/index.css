@@ -1,6 +1,6 @@
 /* ================================================================
    Shreedha Vastra — Global Styles
-   ================================================================ */
+   ================================================================*/
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,10 +8,11 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    @apply overflow-hidden;
   }
 
   body {
-    @apply bg-ivory text-charcoal font-sans antialiased;
+    @apply bg-ivory text-charcoal font-sans antialiased overflow-hidden;
   }
 
   .dark body {
