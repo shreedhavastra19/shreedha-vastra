@@ -9,6 +9,7 @@ const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [viewOrder, setViewOrder] = useState(null);
   const [statusForm, setStatusForm] = useState({ orderStatus: '', trackingNumber: '', courierName: '', note: '' });
 
   const loadOrders = async () => {
@@ -56,10 +57,52 @@ const AdminOrders = () => {
             <td className="px-4 py-3">{o.orderStatus}</td>
             <td className="px-4 py-3">
               <button onClick={() => openStatusModal(o)} className="text-gold text-sm hover:underline">Update</button>
+              <button onClick={() => setViewOrder(o)} className="text-gold text-sm hover:underline">View</button>
             </td>
           </tr>
         )}
       />
+      <Modal isOpen={!!viewOrder} onClose={() => setViewOrder(null)} title={`Order ${viewOrder?.orderNumber}`}>
+        {viewOrder && (
+          <div className="space-y-4 text-sm">
+            <div>
+              <h4 className="font-semibold mb-1">Customer</h4>
+              <p>{viewOrder.user?.name || viewOrder.guestInfo?.name || 'Guest'}</p>
+              <p>{viewOrder.user?.email || viewOrder.guestInfo?.email}</p>
+              <p>{viewOrder.guestInfo?.phone || viewOrder.shippingAddress?.phone}</p>
+              {!viewOrder.user && <p className="text-gold italic">Guest checkout</p>}
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-1">Shipping Address</h4>
+              <p>{viewOrder.shippingAddress?.fullName}</p>
+              <p>{viewOrder.shippingAddress?.line1}</p>
+              {viewOrder.shippingAddress?.line2 && <p>{viewOrder.shippingAddress.line2}</p>}
+              <p>
+                {viewOrder.shippingAddress?.city}, {viewOrder.shippingAddress?.state} {viewOrder.shippingAddress?.pincode}
+              </p>
+              <p>{viewOrder.shippingAddress?.country}</p>
+              <p>Phone: {viewOrder.shippingAddress?.phone}</p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-1">Items</h4>
+              {viewOrder.orderItems?.map((item, i) => (
+                <p key={i}>
+                  {item.name} — {item.size}/{item.color} × {item.quantity} ({formatCurrency(item.price)})
+                </p>
+              ))}
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-1">Payment</h4>
+              <p>Method: {viewOrder.paymentMethod}</p>
+              <p>Total: {formatCurrency(viewOrder.totalPrice)}</p>
+              <p>Status: {viewOrder.isPaid ? 'Paid' : 'Pending'}</p>
+            </div>
+          </div>
+        )}
+      </Modal>
 
       <Modal isOpen={!!selectedOrder} onClose={() => setSelectedOrder(null)} title={`Update Order ${selectedOrder?.orderNumber}`}>
         <div className="space-y-4">
