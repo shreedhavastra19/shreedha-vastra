@@ -3,12 +3,12 @@
 // ================================================================
 import { FiMinus, FiPlus } from 'react-icons/fi';
 
-export const SizeSelector = ({ sizes = [], selectedSize, onSelect }) => (
+export const SizeSelector = ({ sizes = [], selectedSize, onSelect,forceOutOfStock = false }) => (
   <div>
     <h4 className="text-sm font-medium mb-2">Size</h4>
     <div className="flex flex-wrap gap-2">
       {sizes.map((s) => {
-        const outOfStock = s.stock === 0;
+        const outOfStock = forceOutOfStock || s.stock === 0;
         return (
           <button
             key={s.size}
