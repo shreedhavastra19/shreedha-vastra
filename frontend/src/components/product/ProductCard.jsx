@@ -40,12 +40,16 @@ const ProductCard = ({ product }) => {
           <span className="absolute top-3 left-3 bg-charcoal text-ivory text-xs font-medium px-2 py-1 rounded-full">
             Out of Stock
           </span>
-        ) : product.discountPrice && (
+          )
+        : product.isOutOfStock &&(
+            <span className="absolute top-3 left-3 bg-charcoal text-ivory text-xs font-medium px-2 py-1 rounded-full">
+            Out Of Stock </span>
+        )} : product.discountPrice && (
           <span className="absolute top-3 left-3 bg-gold text-ivory text-xs font-medium px-2 py-1 rounded-full">
             {Math.round(((product.price - product.discountPrice) / product.price) * 100)}% OFF
           </span>
-        )}
-
+        )
+      
         <button
           onClick={handleWishlistToggle}
           aria-label="Toggle wishlist"
@@ -65,7 +69,7 @@ const ProductCard = ({ product }) => {
         </div>
       </div>
     </Link>
-  );
+);
 };
 
 export default ProductCard;
