@@ -97,13 +97,13 @@ return(
             {product.colors?.length > 0 && (
               <ColorSelector colors={product.colors} selectedColor={selectedColor} onSelect={setSelectedColor} />
             )}
-            <SizeSelector sizes={product.sizes} selectedSize={selectedSize} onSelect={setSelectedSize} />
+            <SizeSelector sizes={product.sizes} selectedSize={selectedSize} onSelect={setSelectedSize} forceOutOfStock={product.isOutOfStock} />
             <QuantitySelector quantity={quantity} onChange={setQuantity} />
           </div>
 
           <div className="flex gap-3">
-            <button onClick={handleAddToCart} className="btn-primary flex-1">
-              Add to Cart
+            <button onClick={handleAddToCart} disabled={product.isOutOfStock}className="btn-primary flex-1">
+             {product.isOutOfStock ? 'Out Of Stock': 'Add to Cart'}
             </button>
             <button
               onClick={handleWishlist}
