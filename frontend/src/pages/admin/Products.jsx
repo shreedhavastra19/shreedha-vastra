@@ -14,7 +14,7 @@ import { formatCurrency, COLLECTIONS, SIZES } from '../../utils/helpers';
 
 const emptyForm = {
   name: '', description: '', shortDescription: '', category: '', sku: '', price: '', discountPrice: '',
-  fabric: '', careInstructions: '', collections: [],
+  fabric: '', careInstructions: '', collections: [],isOutOfStock: false,
   isFeatured: true, isBestSeller: true, isNewArrival: true,
 };
 
@@ -63,6 +63,7 @@ const AdminProducts = () => {
       discountPrice: product.discountPrice,
       fabric: product.fabric,
       careInstructions: product.careInstructions,
+      isOutOfStock: product.isOutOfStock || false,
       isFeatured:product.isFeatured || true,
       isBestSeller: product.isBestSeller || true,
       isNewArrival: product.isNewArrival ?? true,
@@ -135,7 +136,7 @@ const AdminProducts = () => {
               <td className="px-4 py-3">{p.sku}</td>
               <td className="px-4 py-3">{p.category?.name}</td>
               <td className="px-4 py-3">{formatCurrency(p.discountPrice || p.price)}</td>
-              <td className="px-4 py-3">{p.sizes?.reduce((sum, s) => sum + s.stock, 0)}</td>
+              <td className="px-4 py-3">{p.isOutOfStock?<span className="text-red-500 font-medium">Out Of Stock</span> : p.sizes?.reduce((sum, s) => sum + s.stock, 0)}</td>
               <td className="px-4 py-3 flex gap-3">
                 <button onClick={() => openEditModal(p)} className="text-gold"><FiEdit2 size={16} /></button>
                 <button onClick={() => handleDelete(p._id)} className="text-red-500"><FiTrash2 size={16} /></button>
@@ -178,7 +179,11 @@ const AdminProducts = () => {
               ))}
             </div>
           </div>
-
+<label className="flex items-center gap-2 text-sm font-medium">
+  <input type="checkbox" className="w-4 h-4" {...register('isOutOfStock')}/>
+  mark as out of stock (overrides size stock - product will show unavailable everywhere)
+  </label>
+  
           <div>
             <p className="text-sm font-medium mb-2">Collections</p>
             <div className="flex flex-wrap gap-2">
