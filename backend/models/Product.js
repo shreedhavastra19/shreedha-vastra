@@ -117,7 +117,7 @@ const productSchema = new mongoose.Schema(
     deliveryInfo: {
       type: String,
       default:
-        'Standard delivery in 5-9 business days. Express delivery available at checkout.',
+        'Standard delivery in 5-9 business days.',
     },
     returnPolicy: {
       type: String,
@@ -132,6 +132,7 @@ const productSchema = new mongoose.Schema(
     isFeatured: { type: Boolean, default: false },
     isBestSeller: { type: Boolean, default: false },
     isNewArrival: { type: Boolean, default: true },
+    isOutOfStock: { type: Boolean, default: false },
     status: {
       type: String,
       enum: ['active', 'draft', 'archived'],
